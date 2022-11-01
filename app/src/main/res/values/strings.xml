@@ -4,4 +4,5 @@
         <item>Below 24</item>
         <item>Above 24</item>
     </string-array>
+    <string name="end_result">You need to eat calories per day</string>
 </resources>

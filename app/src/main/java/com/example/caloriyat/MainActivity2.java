@@ -6,15 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity2 extends AppCompatActivity {
+    public Intent i;
+    String result = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent i = new Intent(this,MainActivity3.class);
+        this.i = new Intent(this,MainActivity3.class);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
     }
@@ -22,27 +26,26 @@ public class MainActivity2 extends AppCompatActivity {
     public void calculateBMI (View v){
         EditText we = findViewById(R.id.weight);
         EditText he = findViewById(R.id.height);
-
         Double weight = Double.parseDouble(we.getText().toString());
         Double height = Double.parseDouble(he.getText().toString());
 
-        Double BMI = weight / (height * height);
-        String result = "";
+        Double BMI = weight / Math.pow(height/100,2);
+        String results = "";
 
         if (BMI < 16){
-            result = "severely underweight";
+            results = "severely underweight";
         }
         else if (BMI > 16 && BMI < 18.5){
-            result = "underweight";
+            results = "underweight";
         }
         else if (BMI > 18.5 && BMI < 25){
-            result = "normal";
+            results = "normal";
         }
         else if (BMI > 25 && BMI < 30){
-            result = "overweight";
+            results = "overweight";
         }
         else{
-            result = "obese";
+            results = "obese";
         }
         Toast toast=Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT);
         toast.setMargin(50,50);
@@ -53,25 +56,41 @@ public class MainActivity2 extends AppCompatActivity {
         EditText we = findViewById(R.id.weight);
         EditText he = findViewById(R.id.height);
 
+        RadioGroup genderGroup = findViewById(R.id.radio_gender);
+        int selectedGenderId = genderGroup.getCheckedRadioButtonId();
+        RadioButton radioGender = findViewById(selectedGenderId);
+        String gender = radioGender.getText().toString();
+
+        Boolean isMale = gender == "Male";
+
+
+        Spinner ageSpinner =  findViewById(R.id.age);
+        String age = ageSpinner.getSelectedItem().toString();
+
         Integer weight = Integer.parseInt(we.getText().toString());
         Integer height = Integer.parseInt(he.getText().toString());
+        System.out.println("Gender " + gender + " " + age);
 
-        Double result;
 
-        if("men"=="men"){
-            result = 665 + (6.3 * this.toPounds(weight)) + (12.9 * toInches(height)) - (6.8 * 24);
+
+        if(isMale){
+            System.out.print("Inside Male ");
+            result = 665 + (6.3 * this.toPounds(weight)) + (12.9 * toInches(height)) - (6.8 * 24) + "";
         }
 
-        else if("women"=="below 24"){
-            result = 665 + (4.3 * this.toPounds(weight)) + (4.7 * toInches(height)) - (4.7 * 24);
+        if(!isMale && age=="Below 24"){
+            System.out.print("Inside Female <24");
+            result = 665 + (4.3 * this.toPounds(weight)) + (4.7 * toInches(height)) - (4.7 * 24)+ "";
         }
 
-        else if("women"=="above 24"){
-            result = 455 + (4.3 * this.toPounds(weight)) + (4.7 * toInches(height)) - (4.7 * 24);
+        if(!isMale && age=="Above 24"){
+            System.out.print("Inside Female >24");
+            result = 455 + (4.3 * this.toPounds(weight)) + (4.7 * toInches(height)) - (4.7 * 24)+ "";
         }
 
-//        i.putExtra("calories",result+"");
-//        startActivity(i);
+
+        Intent calories = i.putExtra("calories", result.toString());
+        startActivity(calories);
 
     }
 
